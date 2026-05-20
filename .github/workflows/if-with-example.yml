@@ -28,7 +28,9 @@ jobs:
     steps:
       - name: Production Deploy
         if: github.ref_name == 'main' && github.event_name == 'push'
-        run: echo "Deploying the code to production environment"
+        run: |
+          echo "Deploying the code to production environment"
+          exit 1
 
 
   success_notify:
