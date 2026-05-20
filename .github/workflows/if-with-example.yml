@@ -1,20 +1,48 @@
-name: Jekyll site CI
+name: Nice if example
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - develop
+      - feature/**
 
 jobs:
-  build:
-
+  quality_checks:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the site in the jekyll/builder container
-      run: |
-        docker run \
-        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-        jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+      - name: Peform code quality 
+        if: startsWith(github.ref_name, 'feature') && github.event_name == 'push'
+        run: echo "Perfoming quality checks on the code"
+
+
+  dev_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Development Deploy
+        if: github.ref_name == 'develop' && github.event_name == 'push'
+        run: echo "Deploying the code to development environment"
+
+  prod_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Production Deploy
+        if: github.ref_name == 'main' && github.event_name == 'push'
+        run: echo "Deploying the code to production environment"
+
+
+  success_notify:
+    needs: ['quality_checks', 'dev_deploy', 'prod_deploy']
+    if: always() && !failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify success 
+        run: echo "Success email sent to the team"
+
+  error_notify:
+    needs: ['quality_checks', 'dev_deploy', 'prod_deploy']
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Failure 
+        run: echo "Failure email sent to the team"
