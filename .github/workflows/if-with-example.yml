@@ -16,14 +16,14 @@ jobs:
         run: echo "Perfoming quality checks on the code"
 
 
-  dev-deploy:
+  dev_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Development Deploy
         if: github.ref_name == 'develop' && github.event_name == 'push'
         run: echo "Deploying the code to development environment"
 
-  prod-deploy:
+  prod_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Production Deploy
