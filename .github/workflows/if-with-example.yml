@@ -20,14 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Development Deploy
-        if: github.event_name == 'develop' && github.event_name == 'push'
+        if: github.ref_name == 'develop' && github.event_name == 'push'
         run: echo "Deploying the code to development environment"
 
   prod-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Production Deploy
-        if: github.event_name == 'main' && github.event_name == 'push'
+        if: github.ref_name == 'main' && github.event_name == 'push'
         run: echo "Deploying the code to production environment"
 
 
